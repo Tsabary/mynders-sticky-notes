@@ -1,0 +1,6 @@
+node_modules
+recycle_bin
+.env
+dist
+build
+src/firebase.ts
