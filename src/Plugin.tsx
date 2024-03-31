@@ -1,5 +1,5 @@
 import "./styles.css";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { debounce } from "lodash";
 import {
   Firestore,
@@ -25,15 +25,18 @@ import handleError from "./helpers/handleError";
 import { StickyNote } from "./types/sticky-note";
 import useFirebase from "./hooks/useFirebase";
 import { FirebaseProvider } from "./context/firebase-context";
-import NotesSlider from "./NotesSlider";
-import NoteMenuDrawer from "./NoteMenuDrawer";
+import NotesSlider from "./components/NotesSlider";
+import NoteMenuDrawer from "./components/NoteMenuDrawer";
+import NoteTextarea from "./components/NoteTextarea";
+import { MDXEditorMethods } from "@mdxeditor/editor";
 
 function Plugin(props: MyndersAppProps) {
   const { user, folderId, encryptData, decryptData } = props;
 
   const { firestore, analytics } = useFirebase();
 
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const textAreaRef = useRef<MDXEditorMethods>(null);
+
   const [stickyNotes, setStickyNotes] = useState<StickyNote[]>();
   const [currentNote, setCurrentNote] = useState<StickyNote>();
   const [noteBody, setNoteBody] = useState("");
@@ -75,7 +78,7 @@ function Plugin(props: MyndersAppProps) {
     }
   };
 
-  const handleDeleteNote = async (noteToDelete:StickyNote) => {
+  const handleDeleteNote = async (noteToDelete: StickyNote) => {
     try {
       if (!firestore) {
         throw new Error("Firestore wasn't initialized properly");
@@ -95,13 +98,10 @@ function Plugin(props: MyndersAppProps) {
     }
   };
 
-  const handleNoteBodyChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    const newBody = event.target.value;
-    setNoteBody(newBody);
+  const handleNoteBodyChange = (newNote: string) => {
+    setNoteBody(newNote);
     if (currentNote?._id && firestore) {
-      saveNoteBodyRef.current(currentNote._id, newBody, firestore);
+      saveNoteBodyRef.current(currentNote._id, newNote, firestore);
     }
   };
 
@@ -160,12 +160,13 @@ function Plugin(props: MyndersAppProps) {
     if (!currentNote) return;
     setNoteBody(currentNote.body);
     textAreaRef.current?.focus();
+    textAreaRef.current?.setMarkdown(currentNote.body);
   }, [currentNote]);
 
   return (
     <div
       className={[
-        "absolute z-20 top-0 right-0 bottom-0 left-0 pl-4 md:px-4 flex gap-2 flex-col md:flex-row",
+        "absolute z-20 top-0 right-0 bottom-0 left-0 px-4 flex gap-2 flex-col",
       ].join(" ")}
       style={generateBackgroundPattern("#fdf6b2", "#f2ca52")}
     >
@@ -185,15 +186,15 @@ function Plugin(props: MyndersAppProps) {
         setSelectedNote={setSelectedNote}
         handleDeleteNote={handleDeleteNote}
       />
-      {currentNote && (
-        <textarea
-          ref={textAreaRef}
-          className="h-full flex-1 bg-transparent pl-1 pr-4 py-0 md:p-4 border-none appearance-none focus:outline-none focus:ring-0 resize-none placeholder-black/30"
-          placeholder="Take a note.."
-          value={noteBody}
-          onChange={handleNoteBodyChange}
-        />
-      )}
+      <div className="flex-1 overflow-y-auto">
+        {currentNote && (
+          <NoteTextarea
+            textAreaRef={textAreaRef}
+            noteBody={noteBody}
+            setNoteBody={handleNoteBodyChange}
+          />
+        )}
+      </div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { FaTrash } from "react-icons/fa";
-import { StickyNote } from "./types/sticky-note";
+import { StickyNote } from "../types/sticky-note";
 
 function NoteThumbnail({
   note,
@@ -14,7 +14,7 @@ function NoteThumbnail({
   setCurrent: () => void;
   setIsNoteDrawerVisible: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedNote: React.Dispatch<React.SetStateAction<StickyNote | undefined>>;
-  handleDeleteNote: (noteToDelete:StickyNote) => Promise<void>;
+  handleDeleteNote: (noteToDelete: StickyNote) => Promise<void>;
 }) {
   let pressTimer: NodeJS.Timeout;
 
@@ -36,7 +36,7 @@ function NoteThumbnail({
       onTouchEnd={endPress}
       onTouchCancel={endPress}
       className={[
-        "aspect-square w-24 bg-black/10 rounded p-2 text-sm break-words cursor-pointer flex items-start justify-start text-start transition-colors ease-in-out hover:bg-blue-900/10 flex-shrink-0 relative", // Add 'relative' here for positioning child absolutely
+        "aspect-square w-24 h-24 overflow-hidden bg-black/10 rounded p-2 text-sm break-words cursor-pointer flex items-start justify-start text-start transition-colors ease-in-out hover:bg-blue-900/10 flex-shrink-0 relative",
         isCurrent ? "border border-dashed border-black/60" : "",
       ].join(" ")}
       style={{ hyphens: "auto" }}

@@ -1,6 +1,6 @@
 import { HiPlus } from "react-icons/hi2";
 import NoteThumbnail from "./NoteThumbnail";
-import { StickyNote } from "./types/sticky-note";
+import { StickyNote } from "../types/sticky-note";
 
 function NotesSlider({
   createNewNote,
@@ -20,10 +20,13 @@ function NotesSlider({
   handleDeleteNote: (noteToDelete:StickyNote) => Promise<void>;
 }) {
   return (
-    <div className="flex md:flex-col gap-2 py-4 md:h-full md:overflow-y-auto w-full overflow-x-auto md:overflow-x-hidden md:w-max no-scrollbar">
+    <div 
+    // className="flex md:flex-col gap-2 py-4 md:h-full md:overflow-y-auto w-full overflow-x-auto md:overflow-x-hidden md:w-max no-scrollbar"
+    className="flex gap-2 py-4 w-full overflow-x-auto no-scrollbar h-max"
+    >
       <button
         onClick={createNewNote}
-        className="aspect-square w-24 bg-black/10 rounded p-2 text-sm cursor-pointer flex justify-center items-center flex-shrink-0"
+        className="aspect-square w-24 h-24 bg-black/10 rounded p-2 text-sm cursor-pointer flex justify-center items-center flex-shrink-0"
       >
         <HiPlus className="h-12 w-12 text-black/40" />
       </button>
