@@ -32,7 +32,9 @@
   },
   "dependencies": {
     "@mdxeditor/editor": "^2.18.0",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "remark": "^15.0.1",
+    "strip-markdown": "^6.0.0"
   },
   "peerDependencies": {
     "firebase": "^10.8.1",

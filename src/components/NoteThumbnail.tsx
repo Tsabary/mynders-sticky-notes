@@ -1,5 +1,9 @@
 import { FaTrash } from "react-icons/fa";
+import { remark } from "remark";
+import strip from "strip-markdown";
+
 import { StickyNote } from "../types/sticky-note";
+import { useEffect, useState } from "react";
 
 function NoteThumbnail({
   note,
@@ -16,6 +20,7 @@ function NoteThumbnail({
   setSelectedNote: React.Dispatch<React.SetStateAction<StickyNote | undefined>>;
   handleDeleteNote: (noteToDelete: StickyNote) => Promise<void>;
 }) {
+  const [string, setString] = useState("");
   let pressTimer: NodeJS.Timeout;
 
   const startPress = () => {
@@ -29,6 +34,13 @@ function NoteThumbnail({
     clearTimeout(pressTimer);
   };
 
+  useEffect(() => {
+    (async () => {
+      const file = await remark().use(strip).process(note.body);
+      setString(String(file).replace(/&#x[0-9A-Fa-f]+;/g, ' '));
+    })();
+  }, [note]);
+
   return (
     <div
       onClick={setCurrent}
@@ -41,7 +53,7 @@ function NoteThumbnail({
       ].join(" ")}
       style={{ hyphens: "auto" }}
     >
-      {note.body.length > 40 ? note.body.slice(0, 38) + ".." : note.body}
+      {string.length > 40 ? string.slice(0, 38) + ".." : string}
       {/* Child button */}
       <button
         onClick={(e) => {
