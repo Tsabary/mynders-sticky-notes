@@ -129,16 +129,19 @@ function Plugin(props: MyndersAppProps) {
                 ...doc.data(),
               } as StickyNote)
           );
-          setStickyNotes(
-            docs.map((doc) => {
-              const decryptdBody = doc.body.length ? decryptData(doc.body) : "";
 
-              return {
-                ...doc,
-                body: decryptdBody,
-              };
-            })
-          );
+          const serialzedNotes = docs.map((doc) => {
+            let body = doc.body;
+            if (doc.body.length > 0 && doc.author_id !== "ADMIN") {
+              body = decryptData(doc.body);
+            }
+
+            return {
+              ...doc,
+              body,
+            };
+          });
+          setStickyNotes(serialzedNotes);
         }
       },
       (error) => {
@@ -166,7 +169,7 @@ function Plugin(props: MyndersAppProps) {
   return (
     <div
       className={[
-        "absolute z-20 top-0 right-0 bottom-0 left-0 px-4 flex gap-2 flex-col",
+        "absolute z-20 top-0 right-0 bottom-0 left-0 md:px-4 flex gap-2 flex-col",
       ].join(" ")}
       style={generateBackgroundPattern("#fdf6b2", "#f2ca52")}
     >
@@ -186,7 +189,7 @@ function Plugin(props: MyndersAppProps) {
         setSelectedNote={setSelectedNote}
         handleDeleteNote={handleDeleteNote}
       />
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto md:r-2">
         {currentNote && (
           <NoteTextarea
             textAreaRef={textAreaRef}

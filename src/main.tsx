@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
 import { MyndersFolder, generateBackgroundPattern } from "mynders";
 
@@ -12,21 +12,26 @@ const root = ReactDOM.createRoot(
 
 const ContentfullApp = () => {
   const folder: MyndersFolder = {
-    _id: "dummy-folder-id",
+    _id: "3mFP53W9m8t0ZCK4C2o6",
     admin: "Aa1234",
     name: "My personal folder",
   };
-  const [notesByFolder, setNotesByFolder] = useState<Map<string, any[]>>(
-    new Map()
-  );
-  const areCompletedVisible = true;
-  const selectedFolders: MyndersFolder[] = [folder];
 
   return (
     <Plugin
       firebaseConfig={firebaseConfig}
-      user={{ _id: "Aa1234", email: "user@example.com", storage_usage: 4500 }}
-      folderId="dummy-folder-id"
+      user={{
+        _id: "Aa1234",
+        email: "user@example.com",
+        activated_plugins: [
+          {
+            plugin_id: "com.mynders.sticky_notes",
+            plugin_name: "Sticky Notes",
+          },
+        ],
+        storage_usage: 4500,
+      }}
+      folderId={folder._id}
       encryptData={(data) => "mock encrypted data: " + data}
       encryptFile={() =>
         Promise.resolve(new Blob([], { type: "application/octet-stream" }))
@@ -35,12 +40,9 @@ const ContentfullApp = () => {
       decryptFile={() =>
         Promise.resolve(new File([""], "dummy.txt", { type: "text/plain" }))
       }
-      notesByFolder={notesByFolder}
-      setNotesByFolder={setNotesByFolder}
-      areCompletedVisible={areCompletedVisible}
-      selectedFolders={selectedFolders}
       isNavigatedFrom={() => false}
-      folder={folder}
+      setLocalStorage={() => {}}
+      getLocalStorage={() => ""}
     />
   );
 };

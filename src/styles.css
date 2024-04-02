@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.mdxeditor-toolbar {
+  background-color: white !important; /* Example: A nice blue */
+}

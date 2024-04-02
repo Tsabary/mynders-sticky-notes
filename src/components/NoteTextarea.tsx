@@ -14,8 +14,6 @@ import {
   UndoRedo,
   BoldItalicUnderlineToggles,
   CodeToggle,
-  CreateLink,
-  InsertTable,
   ListsToggle,
   Separator,
 } from "@mdxeditor/editor";
@@ -44,8 +42,6 @@ function NoteTextarea({
               <BoldItalicUnderlineToggles />
               <Separator />
               <CodeToggle />
-              <CreateLink />
-              <InsertTable />
               <ListsToggle />
             </>
           ),
