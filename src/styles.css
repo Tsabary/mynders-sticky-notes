@@ -3,5 +3,6 @@
 @tailwind utilities;
 
 .mdxeditor-toolbar {
-  background-color: white !important; /* Example: A nice blue */
+  background-color: white !important;
+  margin-right: 8px;
 }
