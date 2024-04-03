@@ -57,7 +57,7 @@ function NotesSlider({
       </div>
       <div
         className={`flex gap-2 w-full overflow-x-auto no-scrollbar ${
-          isExpanded ? "h-max" : "hidden"
+          isExpanded ? "h-max" : "!hidden"
         }`}
       >
         <button
