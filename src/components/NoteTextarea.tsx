@@ -10,12 +10,12 @@ import {
   linkPlugin,
   tablePlugin,
   codeBlockPlugin,
-  toolbarPlugin,
-  UndoRedo,
-  BoldItalicUnderlineToggles,
-  CodeToggle,
-  ListsToggle,
-  Separator,
+  // toolbarPlugin,
+  // UndoRedo,
+  // BoldItalicUnderlineToggles,
+  // CodeToggle,
+  // ListsToggle,
+  // Separator,
 } from "@mdxeditor/editor";
 
 function NoteTextarea({
@@ -34,18 +34,18 @@ function NoteTextarea({
       onChange={setNoteBody}
       placeholder="Take a note.."
       plugins={[
-        toolbarPlugin({
-          toolbarContents: () => (
-            <>
-              <UndoRedo />
-              <Separator />
-              <BoldItalicUnderlineToggles />
-              <Separator />
-              <CodeToggle />
-              <ListsToggle />
-            </>
-          ),
-        }),
+        // toolbarPlugin({
+        //   toolbarContents: () => (
+        //     <>
+        //       <UndoRedo />
+        //       <Separator />
+        //       <BoldItalicUnderlineToggles />
+        //       <Separator />
+        //       <CodeToggle />
+        //       <ListsToggle />
+        //     </>
+        //   ),
+        // }),
         headingsPlugin(),
         quotePlugin(),
         listsPlugin(),

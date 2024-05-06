@@ -18,7 +18,7 @@
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.18",
     "firebase": "^10.8.1",
-    "mynders": "^1.0.40",
+    "mynders": "^1.0.61",
     "postcss": "^8.4.35",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0",

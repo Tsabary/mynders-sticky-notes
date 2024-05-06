@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { MyndersFolder, generateBackgroundPattern } from "mynders";
+import { Folder, generateBackgroundPattern } from "mynders";
 
 import Plugin from "./Plugin.tsx";
 import MyndersContainer from "./layout/MyndersContainer.tsx";
@@ -11,7 +11,7 @@ const root = ReactDOM.createRoot(
 );
 
 const ContentfullApp = () => {
-  const folder: MyndersFolder = {
+  const folder: Folder = {
     _id: "3mFP53W9m8t0ZCK4C2o6",
     admin: "Aa1234",
     name: "My personal folder",
@@ -27,6 +27,7 @@ const ContentfullApp = () => {
           {
             plugin_id: "com.mynders.sticky_notes",
             plugin_name: "Sticky Notes",
+            plugin_icon: "",
           },
         ],
         storage_usage: 4500,
@@ -40,7 +41,8 @@ const ContentfullApp = () => {
       decryptFile={() =>
         Promise.resolve(new File([""], "dummy.txt", { type: "text/plain" }))
       }
-      isNavigatedFrom={() => false}
+      isLosingFocus={false}
+      isHome={false}
       setLocalStorage={() => {}}
       getLocalStorage={() => ""}
     />

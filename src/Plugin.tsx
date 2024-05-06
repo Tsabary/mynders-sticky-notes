@@ -1,4 +1,5 @@
 import "./styles.css";
+import "react-modern-drawer/dist/index.css";
 import { useEffect, useRef, useState } from "react";
 import { debounce } from "lodash";
 import {
@@ -16,8 +17,8 @@ import {
 } from "firebase/firestore";
 import { logEvent } from "firebase/analytics";
 import {
-  MyndersAppProps,
-  MyndersNativeAppProps,
+  PluginProps,
+  NativePluginProps,
   generateBackgroundPattern,
 } from "mynders";
 
@@ -30,7 +31,7 @@ import NoteMenuDrawer from "./components/NoteMenuDrawer";
 import NoteTextarea from "./components/NoteTextarea";
 import { MDXEditorMethods } from "@mdxeditor/editor";
 
-function Plugin(props: MyndersAppProps) {
+function Plugin(props: PluginProps) {
   const { user, folderId, encryptData, decryptData } = props;
 
   const { firestore, analytics } = useFirebase();
@@ -45,25 +46,45 @@ function Plugin(props: MyndersAppProps) {
   const [isNoteDrawerVisible, setIsNoteDrawerVisible] = useState(false);
 
   const saveNoteBodyRef = useRef(
-    debounce(async (noteId: string, body: string, firestore: Firestore) => {
-      if (!firestore || !noteId) return;
-      const noteRef = doc(firestore, "sticky-notes", noteId);
-      await updateDoc(noteRef, {
-        body: encryptData(body),
-        placement: new Date().getTime(),
-      });
-    }, 3000)
+    debounce(
+      async (
+        noteId: string,
+        noteAuthor: string,
+        body: string,
+        firestore: Firestore
+      ) => {
+        if (!noteId) return;
+        const noteRef = doc(
+          firestore!,
+          "plugins-data/com.mynders.sticky_notes/notes",
+          noteId
+        );
+        const update: {
+          body: string;
+          placement: number;
+          author_id?: string;
+        } = {
+          body: encryptData(body),
+          placement: new Date().getTime(),
+        };
+        if (noteAuthor === "ADMIN") {
+          update["author_id"] = user!._id;
+        }
+        await updateDoc(noteRef, update);
+      },
+      3000
+    )
   );
 
   const createNewNote = async () => {
-    if (!firestore) throw new Error("Firestore is not defined");
-    if (!user) throw new Error("User is not authenticated");
     if (!!currentNote && noteBody.length === 0) return;
     try {
-      const newNoteRef = doc(collection(firestore, "sticky-notes"));
+      const newNoteRef = doc(
+        collection(firestore!, "plugins-data/com.mynders.sticky_notes/notes")
+      );
 
-      setDoc(newNoteRef, {
-        author_id: user._id,
+      await setDoc(newNoteRef, {
+        author_id: user!._id,
         folder_id: folderId,
         created_at: serverTimestamp(),
         placement: new Date().getTime(),
@@ -80,13 +101,13 @@ function Plugin(props: MyndersAppProps) {
 
   const handleDeleteNote = async (noteToDelete: StickyNote) => {
     try {
-      if (!firestore) {
-        throw new Error("Firestore wasn't initialized properly");
-      }
-
       if (window.confirm("Are you sure you want to delete this note?")) {
         // Reference to the note
-        const noteRef = doc(firestore, "sticky-notes", noteToDelete._id);
+        const noteRef = doc(
+          firestore!,
+          "plugins-data/com.mynders.sticky_notes/notes",
+          noteToDelete._id
+        );
         deleteDoc(noteRef);
       }
     } catch (err: unknown) {
@@ -101,17 +122,19 @@ function Plugin(props: MyndersAppProps) {
   const handleNoteBodyChange = (newNote: string) => {
     setNoteBody(newNote);
     if (currentNote?._id && firestore) {
-      saveNoteBodyRef.current(currentNote._id, newNote, firestore);
+      saveNoteBodyRef.current(
+        currentNote._id,
+        currentNote.author_id,
+        newNote,
+        firestore
+      );
     }
   };
 
   useEffect(() => {
-    if (!firestore) throw new Error("Firestore is not defined");
-    if (!user) throw new Error("User is not authenticated");
-
     // Adjust the query as needed, for example using `where` for filtering
     const q = query(
-      collection(firestore, "sticky-notes"),
+      collection(firestore!, "plugins-data/com.mynders.sticky_notes/notes"),
       where("folder_id", "==", folderId),
       orderBy("placement", "desc")
     );
@@ -202,7 +225,7 @@ function Plugin(props: MyndersAppProps) {
   );
 }
 
-export default (props: MyndersAppProps & MyndersNativeAppProps) => {
+export default (props: PluginProps & NativePluginProps) => {
   return (
     <FirebaseProvider firebaseConfig={props.firebaseConfig}>
       <Plugin {...props} />

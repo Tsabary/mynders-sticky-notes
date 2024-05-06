@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import Drawer from "react-modern-drawer";
 import { toast } from "react-toastify";
-import "react-modern-drawer/dist/index.css";
 import { StickyNote } from "../types/sticky-note";
 
 function NoteMenuDrawer({
