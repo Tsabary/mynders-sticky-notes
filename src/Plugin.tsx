@@ -192,7 +192,7 @@ function Plugin(props: PluginProps) {
   return (
     <div
       className={[
-        "absolute z-20 top-0 right-0 bottom-0 left-0 md:px-4 flex gap-2 flex-col",
+        "absolute z-20 inset-0 md:px-4 flex gap-2 flex-col",
       ].join(" ")}
       style={generateBackgroundPattern("#fdf6b2", "#f2ca52")}
     >

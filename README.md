@@ -25,7 +25,7 @@ To use the Sticky Notes Plugin, you must first have the Mynders platform install
 
 ## Contributing
 
-We encourage the community to contribute to the Sticky Notes Plugin! If you have ideas on how to improve the plugin or want to extend its functionalities, please feel free to fork this repository, make your changes, and submit a pull request. For more information on contributing, please refer to the `CONTRIBUTING.md` file.
+We encourage the community to contribute to the Sticky Notes Plugin! If you have ideas on how to improve the plugin or want to extend its functionalities, please feel free to fork this repository, make your changes, and submit a pull request.
 
 ## Support and Community
 

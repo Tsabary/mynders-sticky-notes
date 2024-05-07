@@ -60,7 +60,7 @@ function NoteThumbnail({
           e.stopPropagation();
           handleDeleteNote(note);
         }}
-        className="absolute bottom-1 right-1 p-1.5 bg-black/40 rounded hidden md:block opacity-35 hover:opacity-80 transition-opacity ease-in-out"
+        className="absolute bottom-1 right-1 p-1.5 bg-black/40 rounded hidden md:!block opacity-35 hover:opacity-80 transition-opacity ease-in-out"
       >
         <FaTrash className="h-3 w-3 text-black/40" />
       </button>
