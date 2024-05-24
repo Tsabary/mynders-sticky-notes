@@ -55,7 +55,8 @@ function NoteTextarea({
         tablePlugin(),
         codeBlockPlugin(),
       ]}
-      className="flex-1 h-full"
+      className="flex-1"
+      contentEditableClassName="pb-20"
     />
   );
 }
