@@ -26,6 +26,10 @@ import { StickyNote } from "../types/sticky-note";
 import { useEffect, useRef, useState } from "react";
 import useMynders from "../hooks/useMynders";
 import useFirebase from "../hooks/useFirebase";
+import { Button } from "./ui/button";
+import { Copy, Trash2 } from "lucide-react";
+import { handleCopy } from "../helpers/handleCopyNote";
+import DeleteNoteDialog from "./DeleteNoteDialog";
 
 function NoteContentDrawer({
   note,
@@ -41,6 +45,7 @@ function NoteContentDrawer({
   const { user, encryptData } = useMynders();
   const { firestore } = useFirebase();
   const [noteTitle, setNoteTitle] = useState("");
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const textAreaRef = useRef<MDXEditorMethods>(null);
 
@@ -106,62 +111,89 @@ function NoteContentDrawer({
   }, [note]);
 
   return (
-    <Drawer
-      open={isNoteDrawerVisible}
-      onOpenChange={(v) => {
-        setIsNoteDrawerVisible(v);
-        if (!v) {
-          setSelectedNote(undefined);
-          setNoteTitle("");
-        }
-      }}
-    >
-      <DrawerContent className="h-5/6 flex flex-col items-stretch justify-stretch ">
-        <DrawerHeader>
-          <input
-            value={noteTitle}
-            onChange={(e) => handleNoteTitleChange(e.target.value)}
-            placeholder="(no title)"
-            className="text-lg font-semibold w-max px-2 -ml-2"
-          />
-        </DrawerHeader>
-        <div
-          className="flex-1 overflow-y-auto md:r-2"
-          style={generateBackgroundPattern("#fdf6b2", "#f2ca52")}
-        >
-          <MDXEditor
-            ref={textAreaRef}
-            markdown={note?.body || ""}
-            onChange={handleNoteBodyChange}
-            placeholder="Take a note.."
-            plugins={[
-              // toolbarPlugin({
-              //   toolbarContents: () => (
-              //     <>
-              //       <UndoRedo />
-              //       <Separator />
-              //       <BoldItalicUnderlineToggles />
-              //       <Separator />
-              //       <CodeToggle />
-              //       <ListsToggle />
-              //     </>
-              //   ),
-              // }),
-              headingsPlugin(),
-              quotePlugin(),
-              listsPlugin(),
-              thematicBreakPlugin(),
-              markdownShortcutPlugin(),
-              linkPlugin(),
-              tablePlugin(),
-              codeBlockPlugin(),
-            ]}
-            className="flex-1"
-            contentEditableClassName="pb-20"
-          />
-        </div>
-      </DrawerContent>
-    </Drawer>
+    <>
+      {note && (
+        <DeleteNoteDialog
+          note={note}
+          isDeleteDialogOpen={isDeleteDialogOpen}
+          setIsDeleteDialogOpen={setIsDeleteDialogOpen}
+          onDelete={() => {
+            setIsNoteDrawerVisible(false);
+            setSelectedNote(undefined);
+          }}
+        />
+      )}
+      <Drawer
+        open={isNoteDrawerVisible}
+        onOpenChange={(v) => {
+          setIsNoteDrawerVisible(v);
+          if (!v) {
+            setSelectedNote(undefined);
+            setNoteTitle("");
+          }
+        }}
+      >
+        <DrawerContent className="h-5/6 flex flex-col items-stretch justify-stretch">
+          <DrawerHeader className="flex items-center">
+            <input
+              value={noteTitle}
+              onChange={(e) => handleNoteTitleChange(e.target.value)}
+              placeholder="(no title)"
+              className="text-lg font-semibold px-2 -ml-2 flex-1"
+            />
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={() => note && handleCopy(note)}
+            >
+              <Copy className="size-4" />
+            </Button>
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={() => setIsDeleteDialogOpen(true)}
+            >
+              <Trash2 className="size-4" />
+            </Button>
+          </DrawerHeader>
+          <div
+            className="flex-1 overflow-y-auto md:r-2"
+            style={generateBackgroundPattern("#fdf6b2", "#f2ca52")}
+          >
+            <MDXEditor
+              ref={textAreaRef}
+              markdown={note?.body || ""}
+              onChange={handleNoteBodyChange}
+              placeholder="Take a note.."
+              plugins={[
+                // toolbarPlugin({
+                //   toolbarContents: () => (
+                //     <>
+                //       <UndoRedo />
+                //       <Separator />
+                //       <BoldItalicUnderlineToggles />
+                //       <Separator />
+                //       <CodeToggle />
+                //       <ListsToggle />
+                //     </>
+                //   ),
+                // }),
+                headingsPlugin(),
+                quotePlugin(),
+                listsPlugin(),
+                thematicBreakPlugin(),
+                markdownShortcutPlugin(),
+                linkPlugin(),
+                tablePlugin(),
+                codeBlockPlugin(),
+              ]}
+              className="flex-1"
+              contentEditableClassName="pb-20"
+            />
+          </div>
+        </DrawerContent>
+      </Drawer>
+    </>
   );
 }
 

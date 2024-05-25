@@ -16,10 +16,12 @@ function DeleteNoteDialog({
   note,
   isDeleteDialogOpen,
   setIsDeleteDialogOpen,
+  onDelete,
 }: {
   note: StickyNote;
   isDeleteDialogOpen: boolean;
   setIsDeleteDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onDelete?: () => void;
 }) {
   const { firestore } = useFirebase();
 
@@ -37,6 +39,7 @@ function DeleteNoteDialog({
           <AlertDialogAction
             onClick={async () => {
               await handleDeleteNote(firestore!, note);
+              onDelete?.();
             }}
           >
             Delete

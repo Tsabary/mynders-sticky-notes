@@ -1,6 +1,10 @@
 import "./styles.css";
 import { useState } from "react";
-import { PluginProps, NativePluginProps, generateBackgroundPattern } from "mynders";
+import {
+  PluginProps,
+  NativePluginProps,
+  generateBackgroundPattern,
+} from "mynders";
 import { Toaster } from "@/components/ui/sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -46,7 +50,7 @@ function Plugin() {
 
   return (
     <>
-      <Toaster />
+      <Toaster position="top-right" richColors />
 
       <div
         className="absolute z-20 inset-0 px-2 md:px-6 bg-white flex flex-col gap-4"
