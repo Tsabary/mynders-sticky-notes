@@ -4,5 +4,6 @@ export type StickyNote = {
   folder_id: string;
   created_at: Timestamp;
   placement: number;
+  title: string;
   body: string;
 };

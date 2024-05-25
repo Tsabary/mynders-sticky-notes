@@ -1,65 +1,55 @@
-import { useMemo } from "react";
-import Drawer from "react-modern-drawer";
-import { toast } from "react-toastify";
 import { StickyNote } from "../types/sticky-note";
+import { Drawer, DrawerContent } from "./ui/drawer";
+import useFirebase from "../hooks/useFirebase";
+import { handleDeleteNote } from "../helpers/handleDeleteNote";
+import { handleCopy } from "../helpers/handleCopyNote";
 
 function NoteMenuDrawer({
   selectedNote,
   setSelectedNote,
-  isNoteDrawerVisible,
-  setIsNoteDrawerVisible,
-  handleDeleteNote,
+  isNoteMenuDrawerVisible,
+  setIsNoteMenuDrawerVisible,
 }: {
   selectedNote: StickyNote | undefined;
   setSelectedNote: React.Dispatch<React.SetStateAction<StickyNote | undefined>>;
-  isNoteDrawerVisible: boolean;
-  setIsNoteDrawerVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  handleDeleteNote: (noteToDelete:StickyNote) => Promise<void>;
+  isNoteMenuDrawerVisible: boolean;
+  setIsNoteMenuDrawerVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const drawerSize = useMemo(() => {
-    const row = 48;
-    if (!selectedNote) return 0;
-    return selectedNote.body.length ? row * 2 : row;
-  }, [selectedNote]);
+  const { firestore } = useFirebase();
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(selectedNote!.body!);
-    toast("Note copied!");
-  };
-
-  if (!selectedNote) return null;
   return (
     <Drawer
-      open={!!isNoteDrawerVisible}
-      onClose={() => {
-        setIsNoteDrawerVisible(false);
+      open={isNoteMenuDrawerVisible}
+      onOpenChange={(v) => {
+        setIsNoteMenuDrawerVisible(v);
+        if (!v) setSelectedNote(undefined);
       }}
-      direction="bottom"
-      size={`${drawerSize + 16}px`}
-      className="md:hidden relative flex flex-col justify-center py-2"
     >
-      {selectedNote.body && (
+      <DrawerContent className="flex md:!hidden flex-col gap-1 items-stretch py-2">
         <button
           onClick={() => {
-            handleCopy();
-            setIsNoteDrawerVisible?.(false);
+            if (!selectedNote) return;
+            handleCopy(selectedNote);
+            setIsNoteMenuDrawerVisible?.(false);
             setSelectedNote?.(undefined);
           }}
           className="text-gray-500 px-4 py-2"
         >
           Copy
         </button>
-      )}
-      <button
-        onClick={async () => {
-          await handleDeleteNote(selectedNote);
-          setIsNoteDrawerVisible(false);
-          setSelectedNote(undefined);
-        }}
-        className="text-red-600 px-4 py-2"
-      >
-        Delete Note
-      </button>
+
+        <button
+          onClick={async () => {
+            if (!selectedNote) return;
+            await handleDeleteNote(firestore!, selectedNote);
+            setIsNoteMenuDrawerVisible(false);
+            setSelectedNote(undefined);
+          }}
+          className="text-red-600 px-4 py-2"
+        >
+          Delete Note
+        </button>
+      </DrawerContent>
     </Drawer>
   );
 }

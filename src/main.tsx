@@ -33,11 +33,11 @@ const ContentfullApp = () => {
         storage_usage: 4500,
       }}
       folderId={folder._id}
-      encryptData={(data) => "mock encrypted data: " + data}
+      encryptData={(data) => data}
       encryptFile={() =>
         Promise.resolve(new Blob([], { type: "application/octet-stream" }))
       }
-      decryptData={(data) => "Mock decrypted data: " + data}
+      decryptData={(data) => data}
       decryptFile={() =>
         Promise.resolve(new File([""], "dummy.txt", { type: "text/plain" }))
       }

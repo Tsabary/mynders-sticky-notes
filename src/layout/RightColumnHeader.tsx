@@ -1,15 +1,6 @@
-import icon from "../assets/icon.png";
-
 function RightColumnHeader() {
   return (
     <div className="h-16 px-2 md:px-4 pt:2 md:pt-4 flex items-center flex-shrink-0">
-      <button className="block md:hidden">
-        <img
-          src={icon}
-          alt="logo"
-          className="h-6 w-9 flex-shrink-0 flex-grow-0 pl-1 pr-2"
-        />
-      </button>{" "}
       <nav className="flex flex-1 overflow-x-auto" aria-label="Breadcrumb">
         <ol className="inline-flex items-center">
           <div className="inline-flex items-center">
