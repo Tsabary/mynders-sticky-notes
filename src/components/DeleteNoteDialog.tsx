@@ -1,6 +1,5 @@
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -11,6 +10,7 @@ import {
 import useFirebase from "../hooks/useFirebase";
 import { StickyNote } from "../types/sticky-note";
 import { handleDeleteNote } from "../helpers/handleDeleteNote";
+import { Button } from "./ui/button";
 
 function DeleteNoteDialog({
   note,
@@ -36,14 +36,16 @@ function DeleteNoteDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
+          <Button
+            variant="destructive"
+            className="mt-2"
             onClick={async () => {
               await handleDeleteNote(firestore!, note);
               onDelete?.();
             }}
           >
             Delete
-          </AlertDialogAction>
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
