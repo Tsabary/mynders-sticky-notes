@@ -16,12 +16,14 @@ import { MyndersProvider } from "./context/mynders-context";
 import NoteFileIcon from "./components/NoteFileIcon";
 import Toolbar from "./components/Toolbar";
 import useFetchNotes from "./hooks/useFetchNotes";
+import DeleteNoteDialog from "./components/DeleteNoteDialog";
 
 function Plugin() {
   const notes = useFetchNotes();
   const [selectedNote, setSelectedNote] = useState<StickyNote>();
   const [isNoteDrawerVisible, setIsNoteDrawerVisible] = useState(false);
   const [isNoteMenuDrawerVisible, setIsNoteMenuDrawerVisible] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const [orderBy, setOrderBy] = useState<"created" | "updated" | "name">(
     "updated"
@@ -51,6 +53,16 @@ function Plugin() {
   return (
     <>
       <Toaster position="top-right" richColors />
+      <DeleteNoteDialog
+        note={selectedNote}
+        isDeleteDialogOpen={isDeleteDialogOpen}
+        setIsDeleteDialogOpen={setIsDeleteDialogOpen}
+        onDelete={() => {
+          setIsNoteDrawerVisible(false);
+          setIsDeleteDialogOpen(false);
+          setSelectedNote(undefined);
+        }}
+      />
 
       <div
         className="absolute z-20 inset-0 px-2 md:px-6 bg-white flex flex-col gap-4"
@@ -88,6 +100,7 @@ function Plugin() {
           setSelectedNote={setSelectedNote}
           isNoteDrawerVisible={isNoteDrawerVisible}
           setIsNoteDrawerVisible={setIsNoteDrawerVisible}
+          setIsDeleteDialogOpen={setIsDeleteDialogOpen}
         />
       </div>
     </>

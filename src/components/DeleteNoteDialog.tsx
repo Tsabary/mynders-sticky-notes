@@ -18,7 +18,7 @@ function DeleteNoteDialog({
   setIsDeleteDialogOpen,
   onDelete,
 }: {
-  note: StickyNote;
+  note: StickyNote | undefined;
   isDeleteDialogOpen: boolean;
   setIsDeleteDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   onDelete?: () => void;
@@ -26,29 +26,37 @@ function DeleteNoteDialog({
   const { firestore } = useFirebase();
 
   return (
-    <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone and will permanently delete this note.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <Button
-            variant="destructive"
-            className="mt-2"
-            onClick={async () => {
-              await handleDeleteNote(firestore!, note);
-              onDelete?.();
-            }}
-          >
-            Delete
-          </Button>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <div style={{ zIndex: 60 }}>
+      <AlertDialog
+        open={!!(isDeleteDialogOpen && note)}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone and will permanently delete this
+              note.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <Button
+              variant="destructive"
+              className="mt-2"
+              onClick={async () => {
+                if (note) {
+                  await handleDeleteNote(firestore!, note);
+                  onDelete?.();
+                }
+              }}
+            >
+              Delete
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
   );
 }
 

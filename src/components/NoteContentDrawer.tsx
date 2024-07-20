@@ -29,24 +29,25 @@ import useFirebase from "../hooks/useFirebase";
 import { Button } from "./ui/button";
 import { Copy, Trash2 } from "lucide-react";
 import { handleCopy } from "../helpers/handleCopyNote";
-import DeleteNoteDialog from "./DeleteNoteDialog";
+import { handleDeleteNote } from "../helpers/handleDeleteNote";
 
 function NoteContentDrawer({
   note,
   setSelectedNote,
   isNoteDrawerVisible,
   setIsNoteDrawerVisible,
+  setIsDeleteDialogOpen,
 }: {
   note?: StickyNote;
   setSelectedNote: React.Dispatch<React.SetStateAction<StickyNote | undefined>>;
   isNoteDrawerVisible: boolean;
   setIsNoteDrawerVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsDeleteDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { user, encryptData } = useMynders();
   const { firestore } = useFirebase();
-  const [noteTitle, setNoteTitle] = useState("");
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
+  const [noteTitle, setNoteTitle] = useState("");
   const textAreaRef = useRef<MDXEditorMethods>(null);
 
   const saveNoteRef = useRef(
@@ -112,17 +113,6 @@ function NoteContentDrawer({
 
   return (
     <>
-      {note && (
-        <DeleteNoteDialog
-          note={note}
-          isDeleteDialogOpen={isDeleteDialogOpen}
-          setIsDeleteDialogOpen={setIsDeleteDialogOpen}
-          onDelete={() => {
-            setIsNoteDrawerVisible(false);
-            setSelectedNote(undefined);
-          }}
-        />
-      )}
       <Drawer
         open={isNoteDrawerVisible}
         onOpenChange={(v) => {
@@ -130,6 +120,13 @@ function NoteContentDrawer({
           if (!v) {
             setSelectedNote(undefined);
             setNoteTitle("");
+            if (
+              note &&
+              !noteTitle &&
+              !textAreaRef.current?.getMarkdown()?.length
+            ) {
+              handleDeleteNote(firestore!, note);
+            }
           }
         }}
       >
